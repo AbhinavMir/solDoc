@@ -1,4 +1,3 @@
-import argparse
 import os
 import re
 # import pprint
@@ -19,7 +18,7 @@ def read_config():
                 config[key.strip()] = value.strip()
     return config
 
-def generate_html(comment_map):
+def generate_html(comment_map, css):
     # Initialize the HTML string
     html = ''
 
@@ -27,7 +26,7 @@ def generate_html(comment_map):
     html += '<!DOCTYPE html>\n<html>\n<head>\n<title>Solidity Documentation</title>\n'
 
     # Add the Skeleton CSS framework
-    html += '<link rel="stylesheet" href="../utils/style.css" />\n'
+    html += '<link rel="stylesheet" href='+css+'>\n'
 
     # Close the head section and start the body section
     html += '</head>\n<body>\n'
@@ -68,17 +67,28 @@ def main():
     config = read_config()
 
     # Set up argument parser
-    parser = argparse.ArgumentParser(description='Generate HTML documentation from Solidity files')
-    parser.add_argument('directory', help='directory containing Solidity files')
-    parser.add_argument('-o', '--output', help='output file name', default=config['output_path'])
-    args = parser.parse_args()
+    if(config['output'] == ''):
+        output = 'docs/index.html'
+    else:
+        output = config['output']
+
+    if(config['directory'] == ''):
+        print('Please specify a directory in the config file')
+    else:
+        directory = config['directory']
+
+    if(config['css'] == ''):
+        css = 'utils/style.css'
+    else:
+        css = config['css']
+
     # Iterate over all files in directory
     comment_map = {}
-    for filename in os.listdir(args.directory):
+    for filename in os.listdir(directory):
         # Only process Solidity files
         if filename.endswith('.sol'):
             # Read file contents
-            with open(os.path.join(args.directory, filename), 'r') as f:
+            with open(os.path.join(directory, filename), 'r') as f:
                 content = f.read()
             
             # Find all comments in file
@@ -104,10 +114,10 @@ def main():
 
 
     # Generate HTML
-    html = generate_html(comment_map)
+    html = generate_html(comment_map, css)
 
     # Write HTML to file
-    with open(args.output, 'w') as f:
+    with open(output, 'w') as f:
         f.write(html)
 
 if __name__ == '__main__':
