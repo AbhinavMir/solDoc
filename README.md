@@ -23,7 +23,7 @@ output = docs/index.html
 
 3. Run the script:
 ```bash
-python src/soldocs.py
+python src/soldoc.py
 ```
 
 ## Features
