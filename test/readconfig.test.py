@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import mock_open, patch
 
-import my_module
+import <soldocs here> as my_module
 
 class MyModuleTestCase(unittest.TestCase):
 
